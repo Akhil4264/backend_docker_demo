@@ -33,6 +33,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/',(req,res) => {
+  res.send("server running successfully")
+})
+
 app.get('/goals', async (req, res) => {
   console.log('TRYING TO FETCH GOALS');
   try {
