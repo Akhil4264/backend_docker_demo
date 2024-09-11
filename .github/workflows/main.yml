@@ -51,7 +51,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json 
-          container-name: nodejs-app
+          container-name: backend
           image: ${{ steps.build-image.outputs.image }}   
           environment : "MONGO_URL=${{secrets.MONGO_URL}}" 
       - name: Deploy Amazon ECS task definition
