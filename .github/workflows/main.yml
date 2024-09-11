@@ -58,6 +58,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: backend-demo
-          cluster: dockerDemo
+          service: "backend-demo"
+          cluster: "dockerDemo"
           wait-for-service-stability: true    
