@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  AWS_REGION: us-east-1
+  AWS_REGION: us-east-1 # ecr public is only avaliable in us-east-1
   ECR_REPOSITORY: docker-demo/backend    
 
 jobs:
@@ -44,3 +44,19 @@ jobs:
           docker build -t $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json 
+          container-name: nodejs-app
+          image: ${{ steps.build-image.outputs.image }}   
+          environment : "MONGO_URL=${{secrets.MONGO_URL}}" 
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: nodejs-app-service
+          cluster: DevCluster
+          wait-for-service-stability: true    
