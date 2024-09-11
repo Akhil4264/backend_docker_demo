@@ -56,6 +56,8 @@ jobs:
           environment : "MONGO_URL=${{secrets.MONGO_URL}}" 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        env:
+          AWS_REGION: ap-south-1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: "backend-demo"
